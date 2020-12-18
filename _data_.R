@@ -260,16 +260,16 @@ X = c(-4, 0, 4)
 Y = c(10, 0, 10)
 centers = data.frame(X,Y)
 model <- kmeans(data, centers)
-model$tot.withinss #cohesion
-model$betweenss #separation
+model$tot.withinss 				#cohesion
+model$betweenss 				#separation
 model_silhouette <- silhouette(model$cluster, dist(data))
-model2_mean_silhouette = mean(model_silhouette[, 3]) #although you can get it from the diagram (it says mean:...)
+model2_mean_silhouette = mean(model_silhouette[, 3]) 
+#although you can get it from the diagram (it says mean:...)
 #you may be asked to compute a silhouette for another model so,
 # .
 # .
 # .
 which.max(c(model1_mean_silhouette, model2_mean_silhouette))
-
 
 #hclust --> needs dist on data! (also "clean" the data from the target column) --> book page 113 
 target = dcdata [,3]
@@ -277,8 +277,8 @@ dcdata = dcdata[,-3] #all but the 3rd column, which is the target.
 data_dist <- dist(dcdata)
 model <- hclust(data_dist, method = "complete") #or single
 clusters = cutree(model, k = 2)
-Accuracy(clusters, target) #target = dcdata [,3] --> requires library(MLmetrics)
-
+#Accuracy requires library(MLmetrics), like all other Metrics.
+Accuracy(clusters, target) #target = dcdata [,3] 
 
 #dbscan --> book page 126
 library(dbscan)
