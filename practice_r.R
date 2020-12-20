@@ -95,18 +95,18 @@ pred = predict(svm_model, new_data13[,-3])
 prediction = as.data.frame(pred)
 Recall(training$price, pred, positive = "High")
 
-##########################################################
+###############################################################################################################
 
-#kmeans me kentra ta 2 prwta shmeia.
+#Kmeans with the 2 first elements of the dataset acting as centers.
 new_data14 = training[,c(3,4)]
-centers = new_data14[1:2,]
-model = kmeans(new_data14, centers)
+centers = new_data14[1:2,]              #setting the 2 first elements (rows) as the centers.
+model = kmeans(new_data14, centers)     
 
 model_silhouette = silhouette(model$cluster, dist(new_data14))
 plot(model_silhouette)
 mean(model_silhouette[,3])
 
-# 
+# silhouette of the 1st cluster? (HC)
 newdata15 = training[,c(3,4)]
 d = dist(newdata15)
 hc_complete = hclust(d, method = "complete")
@@ -119,9 +119,9 @@ model_silhouette = silhouette(clusters, d)
 plot(model_silhouette)
 mean(model_silhouette[,3])
 
-# 
+# Number of clusters? (DBSCAN)
 newdata16 = training[,c(3,4)]
-model = dbscan(newdata16, eps = 0.3, minPts = 7)
+model = dbscan(newdata16, eps = 0.25, minPts = 5)
 clusters = model$cluster
 plot(newdata16, col = clusters + 1, pch = 15)
 #levels(as.factor(model$cluster))
