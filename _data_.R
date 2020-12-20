@@ -259,10 +259,12 @@ library(cluster)
 X = c(-4, 0, 4)
 Y = c(10, 0, 10)
 centers = data.frame(X,Y)
-model <- kmeans(data, centers)
+#The centers could be the first elements of the dataset eg. centers = data[1:2,]
+model <- kmeans(data, centers)	#in clustering, when refering to the 'data" we do not need to include the target column.
 model$tot.withinss 				#cohesion
 model$betweenss 				#separation
 model_silhouette <- silhouette(model$cluster, dist(data))
+plot(model_silhouette)
 model1_mean_silhouette = mean(model_silhouette[, 3]) 
 #although you can get it from the diagram (it says mean:...)
 #you may be asked to compute a silhouette for another model so,
@@ -270,6 +272,12 @@ model1_mean_silhouette = mean(model_silhouette[, 3])
 # .
 # .
 which.max(c(model1_mean_silhouette, model2_mean_silhouette))
+#selecting the optimal number of clusters based on SSE.
+SSE <- (nrow(cdata) - 1) * sum(apply(cdata, 2, var))
+for (i in 2:10)
+SSE[i] <- kmeans(cdata, centers = i)$tot.withinss
+plot(1:10, SSE, type="b", xlab="Number of Clusters", ylab="SSE") 
+#from this plot we can extract the optimal number of clusters based on the elbow method.
 
 #hclust --> needs dist on data! (also "clean" the data from the target column) --> book page 113 
 target = dcdata [,3]
