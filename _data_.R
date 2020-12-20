@@ -264,7 +264,7 @@ model <- kmeans(data, centers)	#in clustering, when refering to the 'data" we do
 model$tot.withinss 				#cohesion
 model$betweenss 				#separation
 model_silhouette <- silhouette(model$cluster, dist(data))
-plot(model_silhouette)
+plot(model_silhouette)			#To visualize the results.
 model1_mean_silhouette = mean(model_silhouette[, 3]) 
 #although you can get it from the diagram (it says mean:...)
 #you may be asked to compute a silhouette for another model so,
