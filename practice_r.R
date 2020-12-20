@@ -95,13 +95,12 @@ pred = predict(svm_model, new_data13[,-3])
 prediction = as.data.frame(pred)
 Recall(training$price, pred, positive = "High")
 
-# 
-# new_data14 = training[,3:4]
-# model = kmeans(new_data14, centers = 2)
+##########################################################
 
 #kmeans me kentra ta 2 prwta shmeia.
-new_data14 = data.frame(training[,3], training[,4])
-model = kmeans(new_data14, centers = new_data14[1:2,])
+new_data14 = training[,c(3,4)]
+centers = new_data14[1:2,]
+model = kmeans(new_data14, centers)
 
 model_silhouette = silhouette(model$cluster, dist(new_data14))
 plot(model_silhouette)
@@ -125,3 +124,4 @@ newdata16 = training[,c(3,4)]
 model = dbscan(newdata16, eps = 0.3, minPts = 7)
 clusters = model$cluster
 plot(newdata16, col = clusters + 1, pch = 15)
+#levels(as.factor(model$cluster))
