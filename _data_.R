@@ -292,7 +292,15 @@ data_dist <- dist(dcdata)
 model <- hclust(data_dist, method = "complete") #or single
 clusters = cutree(model, k = 2)
 #Accuracy requires library(MLmetrics), like all other Metrics.
-Accuracy(clusters, target) #target = dcdata [,3] 
+Accuracy(clusters, target) #target = dcdata [,3]
+#silhouette of the 1st cluster? (HC)
+mean(model_silhouette[which(model_silhouette[,1]==1),3])
+#
+#optimal number of clusters based on silhouette?
+slc = c()
+for (i in 2:20){
+	clusters = cutree(hc, k = i)
+	slc [i-1] = mean(silhouette(clusters, d)[, 3]) }
 
 #dbscan --> book page 126
 library(dbscan)
