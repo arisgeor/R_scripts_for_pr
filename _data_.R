@@ -306,6 +306,14 @@ for (epsilon in epsValues) {
        pch = ifelse(model$cluster, 1, 4), 
        main = paste("DBSCAN with eps = ", epsilon, sep = ""))
 }
+#
+#Number of clusters? (DBSCAN)
+model = dbscan(data, eps = 0.25, minPts = 5)
+clusters = model$cluster
+plot(data, col = clusters + 1, pch = 15)
+levels(as.factor(model$cluster))
+#max(model$cluster)
+#length(unique(model$cluster)) - 1
 
 #GMMs
 library(mixtools)
