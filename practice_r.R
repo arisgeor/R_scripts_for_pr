@@ -125,3 +125,5 @@ model = dbscan(newdata16, eps = 0.25, minPts = 5)
 clusters = model$cluster
 plot(newdata16, col = clusters + 1, pch = 15)
 #levels(as.factor(model$cluster))
+#max(model$cluster)
+#length(unique(model$cluster)) - 1
