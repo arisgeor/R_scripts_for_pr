@@ -106,7 +106,7 @@ model_silhouette = silhouette(model$cluster, dist(new_data14))
 plot(model_silhouette)
 mean(model_silhouette[,3])
 
-# silhouette of the 1st cluster? (HC)
+# silhouette 
 newdata15 = training[,c(3,4)]
 d = dist(newdata15)
 hc_complete = hclust(d, method = "complete")
@@ -118,6 +118,8 @@ rect.hclust(hc_complete, k = 2)
 model_silhouette = silhouette(clusters, d)
 plot(model_silhouette)
 mean(model_silhouette[,3])
+#silhouette of the 1st cluster? (HC)
+mean(model_silhouette[which(model_silhouette[,1]==1),3])
 
 # Number of clusters? (DBSCAN)
 newdata16 = training[,c(3,4)]
