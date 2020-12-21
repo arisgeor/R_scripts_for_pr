@@ -314,6 +314,12 @@ plot(data, col = clusters + 1, pch = 15)
 levels(as.factor(model$cluster))
 #max(model$cluster)
 #length(unique(model$cluster)) - 1
+#
+#
+#find the best eps value given minPts=15. In which range is does the best eps value belong?
+knndist = kNNdist(data, k = 15)
+plot(sort(knndist), type = 'l', xlab = "Points sorted by distance", ylab = "15-NN distance") 
+#I spot the knee of the curve. In knndist, k=minPts
 
 #GMMs
 library(mixtools)
