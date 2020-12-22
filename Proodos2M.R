@@ -4,13 +4,13 @@ remove(list = ls())
 data = read.csv("data.txt", stringsAsFactors = TRUE)
 ###############################################################################################################
 # Libraries
-library(class)			-> knn
+library(class)			  -> knn
 library(MLmetrics)		-> Accuracy
-library(vegan)			-> isomap
+library(vegan)			  -> isomap
 library(scatterplot3d)
-library(cluster)		-> silhouette
+library(cluster)		  -> silhouette
 library(dbscan)
-library(mixtools)		-> EM
+library(mixtools)		  -> EM
 ###############################################################################################################
 # Lab 6
 

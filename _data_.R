@@ -239,6 +239,9 @@ sum(eigenvalues[5:9])/sum(eigenvalues)#keep the first 4 PCs and find info_loss. 
   ypred = knn(training, testing, trainingType, k = 3)
   Accuracy(ypred, testingType) #testingtype = ytest, meaning just the target column from the test_data
   Recall(testingType, ypred, "2")
+  eigenvectors = pca_model$rotation
+  #significance
+  barplot(eigenvalues / sum(eigenvalues))
   #optimal number of PC for maximizing Accuracy
   accuracies <- c()
   pValues = c(1:9)
@@ -250,6 +253,13 @@ sum(eigenvalues[5:9])/sum(eigenvalues)#keep the first 4 PCs and find info_loss. 
   }
   pValues[which.max(accuracies)]
   #^^paloykaki
+
+#ISOMAP
+#calculate and plot
+isom <- isomap(dist(data), ndim=2, k = 4)
+data_2d <- isom$points
+colors = data_2d[,1] -  min(data_2d[,1]) + 1
+scatterplot3d(data, angle = 88, scale.y = 5, color = colors)
   
 ###################################################################################################################################
   
@@ -284,6 +294,14 @@ for (i in 2:5){
   model<-kmeans((data),centers=data[1:i,])
   print(mean(silhouette(model$cluster,dist(data))[,3]))
 }
+# Plot data and centers
+plot(data, col = model$cluster, pch = 15, , main = "kmeans")
+points(model$centers, col = 1:length(model$centers), pch = "+", cex = 2)
+# Heatmap
+data_ord = data[order(model$cluster),]
+heatmap(as.matrix(dist(data_ord)), Rowv = NA, Colv = NA,col = heat.colors(256), revC = TRUE)
+
+########
 
 #hclust --> needs dist on data! (also "clean" the data from the target column) --> book page 113 
 target = dcdata [,3]
@@ -301,6 +319,8 @@ slc = c()
 for (i in 2:20){
 	clusters = cutree(hc, k = i)
 	slc [i-1] = mean(silhouette(clusters, d)[, 3]) }
+
+########
 
 #dbscan --> book page 126
 library(dbscan)
@@ -330,6 +350,8 @@ plot(sort(knndist), type = 'l', xlab = "Points sorted by distance", ylab = "15-N
 #I spot the knee of the curve. In knndist, k=minPts
 #kNNdistplot(data,k=15)
 
+##########
+
 #GMMs
 library(mixtools)
 Y = data[,3]
@@ -341,8 +363,9 @@ plot(data, col = clusters + 1) #plot data
 points(centers, col = 1:length(centers) + 1, pch = "+", cex = 2)# plot centers
 
 
-
 #other usufull commands
+remove(list = ls())
 head(data)
+
 
 #Your buddy FlipFlop <3 
