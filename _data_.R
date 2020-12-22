@@ -328,6 +328,7 @@ levels(as.factor(model$cluster))
 knndist = kNNdist(data, k = 15)
 plot(sort(knndist), type = 'l', xlab = "Points sorted by distance", ylab = "15-NN distance") 
 #I spot the knee of the curve. In knndist, k=minPts
+#kNNdistplot(data,k=15)
 
 #GMMs
 library(mixtools)
@@ -339,5 +340,9 @@ centers = matrix(unlist(model$mu), byrow = TRUE, ncol = 2)
 plot(data, col = clusters + 1) #plot data
 points(centers, col = 1:length(centers) + 1, pch = "+", cex = 2)# plot centers
 
+
+
+#other usufull commands
+head(data)
 
 #Your buddy FlipFlop <3 
