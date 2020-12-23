@@ -12,10 +12,12 @@ library(rpart.plot)
 library(e1071)
 library(MLmetrics)
 library(ROCR)
-library(class)
 library(neuralnet)
 library(vegan)
+library(class)
+
 library(cluster)
+library(dbscan)
 library(mixtools)
 
 data = read.csv("data.csv") #plz dont fuck this up like I did.
@@ -339,16 +341,18 @@ for (epsilon in epsValues) {
 model = dbscan(data, eps = 0.25, minPts = 5)
 clusters = model$cluster
 plot(data, col = clusters + 1, pch = 15)
-levels(as.factor(model$cluster))
-#max(model$cluster)
-#length(unique(model$cluster)) - 1
+levels(as.factor(model$cluster)) #ingone cluster 0
+max(model$cluster) #yields just the number of clusters
+length(unique(model$cluster)) - 1 #the same
 #
 #
 #find the best eps value given minPts=15. In which range is does the best eps value belong?
 knndist = kNNdist(data, k = 15)
 plot(sort(knndist), type = 'l', xlab = "Points sorted by distance", ylab = "15-NN distance") 
 #I spot the knee of the curve. In knndist, k=minPts
-#kNNdistplot(data,k=15)
+abline(h = 0.3, col = "grey")
+
+kNNdistplot(data,k=15) #does exactly the same as the above!
 
 ##########
 
@@ -365,7 +369,7 @@ points(centers, col = 1:length(centers) + 1, pch = "+", cex = 2)# plot centers
 
 #other usufull commands
 remove(list = ls())
-head(data)
+head(data) #to quickly overview the dataset.
 
 
 #Your buddy FlipFlop <3 
