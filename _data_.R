@@ -29,7 +29,7 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	model <- rpart(Target ~ ., method = "class", data = data, minsplit = 1, minbucket = 1, cp = -1) # this ~ . means "all atributes"
 	rpart.plot(model, extra = 104, nn = TRUE)
 
-	# Question from Exams. What if it asks for a single case prediction?
+	#Question from Exams. What if it asks for a single case prediction?
 	newdata = training[,c(1,2,5)]
 	model <- rpart(price ~ body + engine, method = "class", data = newdata, 
                minsplit = 1, minbucket = 1, cp = -1)
@@ -56,6 +56,7 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	GINI_Family = 1 - freq["Family", "No"]^2 - freq["Family", "Yes"]^2 # I have to calculate each level first :( 
 	GINI_Sedan = 1 - freq["Sedan", "No"]^2 - freq["Sedan", "Yes"]^2
 	GINI_Sport = 1 - freq["Sport", "No"]^2 - freq["Sport", "Yes"]^2
+	
 	GINI_CarType = freqSum["Family"] * GINI_Family + freqSum["Sedan"] * GINI_Sedan + freqSum["Sport"] * GINI_Sport
 	#4)GINI for Customer ID. (Customer ID, or any ID or that matter) always has a GINI Index of 0 
 	#because the model overfits the data, 
@@ -77,7 +78,7 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	#Create a Classification Tree (using the columns body and engine (and ofc the target))
 	#To what class does the observation:"body = sedan", "engine = diesel" ,belong to?
 	newdata = training[,c(1,2,5)]
-	model <- rpart(price ~ body + engine, method = "class", data = newdata, 
+	model <- rpart(price ~ . , method = "class", data = newdata, 
 		minsplit = 1, minbucket = 1, cp = -1)
 	rpart.plot(model, extra = 104, nn = TRUE)
 	trvalue <- data.frame(body = factor("sedan", levels(newdata$body)),
@@ -101,15 +102,29 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 #NaiveBayes --> book page 47 
 	model <- naiveBayes(Class ~ ., data = trainingdata) #Here, "Class" refers to the target! Could be anything (Y, Result etc...)
 
-	#Confusion matrix and Metrics Calculation
-	?ConfusionMatrix #gives info 
-	ytest = testingdata[,1] #Select the correct target column! (here "Class" is the 1st column, not the last. Usually its either 1 or 3, but be carefull)
-	xtest = testingdata[,-1] #all but the 1st column 
+	#Exams2020 Question.
+	#first create the new training and testing data according to the desired columns.
+	newtrain12 = training[,c(5,6,8,10)]   #carefull it also needs the target column!!!
+	newtest12 = testing[,c(5,6,8,10)]     #you also need to create a new one for the testdata!
+	model <- naiveBayes(as.factor(Class) ~ ., data = newtrain12) #needs as.factor, and the newtrain12 data (not the newtest)
+	ytest = testingdata[,4]  #Select the correct target column! (here "Class" is the 4th column. Usually its either 1 or 3, but be carefull)
+	xtest = testingdata[,-4] #all but the 4th column 
 	pred = predict(model, xtest)
-	ConfusionMatrix(ytest, pred)
+	TN = length(which(ytest[which(pred == "0")] == "0")) #I put zero because it needs the True Negatives.
+	
 	Precision(ytest, pred, "democrat") #if you omit "democrat" nothing important changes (not a political opinion xD)
 	Recall(ytest, pred)
 	F1_Score(ytest, pred)
+	ConfusionMatrix(pred, ytest) #in the CM its the opposite order. You need to place pred first, followed by ytest. Accuracy also needs pred first. 
+	
+	#from exams (Sept. 2020) predict for a single point!
+	#Create a Naive Bayes Classifier using the columns body and engine
+	#To what class does the observation "body = crossover" and "engine = gas", belong to? 
+	newdata12 = training[,c(1,2,5)]
+	model <- naiveBayes(price ~ ., data = newdata12, laplace = 1)
+	trvalue <- data.frame(body = factor("crossover", levels(newdata12$body)),  
+	                      engine = factor("gas", levels(newdata12$engine)))
+	predict(model, trvalue, type = "raw")
 
 	#ROC
 	library(ROCR)
@@ -133,20 +148,6 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	model <- naiveBayes(PLAY ~ ., data = data, laplace = 0)
 	pred = predict(model, data.frame(WEATHER = "CLOUDY", TEMPERATURE = "HIGH" ),type = "raw" )
 
-	#from exams (Sept. 2020) predict for a single point!
-	newdata12 = training[,c(1,2,5)]
-	model <- naiveBayes(price ~ ., data = newdata12, laplace = 1)
-	trvalue <- data.frame(body = factor("crossover", levels(newdata12$body)),  
-                      engine = factor("gas", levels(newdata12$engine)))
-	predict(model, trvalue, type = "raw")
-
-	#Create a Naive Bayes Classifier using the columns body and engine
-	#To what class does the observation "body = crossover" and "engine = gas", belong to? 
-	newdata12 = training[,c(1,2,5)]
-	model <- naiveBayes(price ~ ., data = newdata12, laplace = 1)
-	trvalue <- data.frame(body = factor("crossover", levels(newdata12$body)),  
-                      engine = factor("gas", levels(newdata12$engine)))
-	predict(model, trvalue, type = "raw")
 
 #KNN --> book page 51 
 	library(class)
@@ -154,6 +155,20 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	#example from exams
 	newdata11 = training[,c(3,4,5)] #The 5th column was the "target" column, however in the new dataset i have 3 columns, the 3rd being the new target!
 	knn(newdata11[,-3], c(2.3,1.2), newdata11[,3], k = 7, prob = TRUE)
+	
+  #13 Exams2020
+	#What is the range of Recall? (0.13~0.15)
+	library(class)
+	library(MLmetrics)
+	newtrain13 = training[,c(1,3,4,10)]
+	newtest13 = testing[,c(1,3,4,10)]
+	
+	xtrain = newtrain13[,-4]
+	ytrain = newtrain13[,4]
+	xtest = newtest13[,-4]
+	ytest = newtest13[,4]
+	pred = knn(xtrain, xtest, ytrain, k = 5, prob = TRUE) #!!!Full prosoxh sth seira!!!
+	Recall(ytest, pred, positive = "1") #because the target column has 0 & 1
 
 
 #ANN --> book page (below knn :P)
@@ -175,6 +190,19 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	#The following was asked on Sept. 2020
 	prediction = as.data.frame(ypred)
 	Recall(training$price, ypred, positive = "High") # "price" was the target
+	
+	#14 Exams2020 
+	#Calculate F1 score of the !!!Testing set!!! (carefull) 
+	library(e1071)
+	newtrain14 = training[,c(1,3,4,10)] #first of all select the appropriate columns.
+	newtest14 = testing[,c(1,3,4,10)]
+	svm_model = svm(as.factor(NumericSeverity) ~ ., kernel="radial", type="C-classification", data = newtrain14, gamma = 10) #carefull, you need the trainingdata
+	ytest = newtest14[,4] #4 giati mono toses stiles exw.
+	xtest = newtest14[,-4]
+	library(MLmetrics)
+	pred = predict(svm_model, xtest)
+	#prediction = as.data.frame(pred)
+	F1_Score(ytest, pred, positive = "1")
 	
 	#or for a single point
 	model <- svm(Y ~ ., alldata, kernel = "radial", type = "C-classification", gamma = 1, probability = TRUE)
