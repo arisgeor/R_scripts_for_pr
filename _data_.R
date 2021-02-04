@@ -126,7 +126,7 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	                      engine = factor("gas", levels(newdata12$engine)))
 	predict(model, trvalue, type = "raw")
 
-	#ROC
+#ROC
 	library(ROCR)
 	predprob = predict(model, xtest, type = "raw") #i need the type = raw part to turn strings into numbers
 	#otherwise i just put the column in the pred_object function
