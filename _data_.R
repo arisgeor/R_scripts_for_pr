@@ -97,7 +97,7 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 #so you instantly disqualify these options.
 #Sorry for the sedonaki. Check out quiz 2 (second to last question) for this scenario!
 
-
+###################################
 
 #NaiveBayes --> book page 47 
 	model <- naiveBayes(Class ~ ., data = trainingdata) #Here, "Class" refers to the target! Could be anything (Y, Result etc...)
@@ -148,7 +148,8 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	model <- naiveBayes(PLAY ~ ., data = data, laplace = 0)
 	pred = predict(model, data.frame(WEATHER = "CLOUDY", TEMPERATURE = "HIGH" ),type = "raw" )
 
-
+###################################
+	
 #KNN --> book page 51 
 	library(class)
 	knn(xtrain, c(-1, 1), ytrain, k = 5, prob = TRUE) #also gives probability for the point to belong in class X!
@@ -157,7 +158,7 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	knn(newdata11[,-3], c(2.3,1.2), newdata11[,3], k = 7, prob = TRUE)
 	
   #13 Exams2020
-	#What is the range of Recall? (0.13~0.15)
+	#What is the range of Recall? (0.13~0.16)
 	library(class)
 	library(MLmetrics)
 	newtrain13 = training[,c(1,3,4,10)]
@@ -170,7 +171,8 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	pred = knn(xtrain, xtest, ytrain, k = 5, prob = TRUE) #!!!Full prosoxh sth seira!!!
 	Recall(ytest, pred, positive = "1") #because the target column has 0 & 1
 
-
+###################################
+	
 #ANN --> book page (below knn :P)
 	library(neuralnet)
 	model <- neuralnet(Y ~ X1 + X2, alldata, hidden = 2, threshold = 0.01)
@@ -181,7 +183,8 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	print(MAE)
 	#you can do the same to calculate the Testing Error
 
-
+##################################
+	
 #SVM --> book page 61
 	library(e1071)
 	model <- svm(Y ~ ., alldata, kernel = "radial", type = "C-classification", gamma = 1) #Y refers to the target! could be anything!
@@ -218,10 +221,10 @@ data = read.csv("data.csv") #plz dont fuck this up like I did.
 	training_error = c(training_error, 1 - Accuracy(trainingdata$y, pred)) # y is the target!
 	}
 
-	#testing error
+	#testing error !! we ll use training data! !!
 	testing_error = c()
 	for (gamma in gammavalues) {
-	svm_model = svm(y ~ ., kernel="radial", type="C-classification", data = trainingdata, gamma = gamma) #we use training data!
+	svm_model = svm(y ~ ., kernel="radial", type="C-classification", data = trainingdata, gamma = gamma) 
 	pred = predict(svm_model, testdata[, c(1:2)])
 	testing_error = c(testing_error, 1 - Accuracy(testdata$y, pred))
 	}	
@@ -319,19 +322,21 @@ plot(1:10, SSE, type="b", xlab="Number of Clusters", ylab="SSE")
 #from this plot we can extract the optimal number of clusters based on the elbow method.
 #
 #
-#kmeans with the first N elements of the dataset as centers. which is the best N?
+#kmeans with the first N elements of the dataset as centers. which is the best N based on silhouette?
 for (i in 2:5){
   model<-kmeans((data),centers=data[1:i,])
   print(mean(silhouette(model$cluster,dist(data))[,3]))
 }
+
 # Plot data and centers
 plot(data, col = model$cluster, pch = 15, , main = "kmeans")
 points(model$centers, col = 1:length(model$centers), pch = "+", cex = 2)
+
 # Heatmap
 data_ord = data[order(model$cluster),]
 heatmap(as.matrix(dist(data_ord)), Rowv = NA, Colv = NA,col = heat.colors(256), revC = TRUE)
 
-########
+##################################################
 
 #hclust --> needs dist on data! (also "clean" the data from the target column) --> book page 113 
 target = dcdata [,3]
@@ -349,8 +354,9 @@ slc = c()
 for (i in 2:20){
 	clusters = cutree(hc, k = i)
 	slc [i-1] = mean(silhouette(clusters, d)[, 3]) }
+plot(2:20, slc, type="b", xlab="Number of Clusters", ylab ="Silhouette")
 
-########
+#####################################################
 
 #dbscan --> book page 126
 library(dbscan)
@@ -382,7 +388,7 @@ abline(h = 0.3, col = "grey")
 
 kNNdistplot(data,k=15) #does exactly the same as the above!
 
-##########
+#########################################
 
 #GMMs
 library(mixtools)
